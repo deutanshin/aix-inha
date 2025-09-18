@@ -1,0 +1,32 @@
+---
+- name: speedtest for all nodes
+  hosts: all
+  gather_facts: yes 
+
+  tasks:
+    - name: Install speedtest-cli
+      apt:
+        name: speedtest-cli
+        state: present
+      become: yes
+
+    
+    - name: Run speedtest-cli on each node
+      command: speedtest-cli
+      register: speedtest_result
+      ignore_errors: true 
+
+
+    - name: Gather results into a single log file
+      lineinfile:
+        path: "./speedtest_result.log"
+        line: |
+          #############################################
+          # Host: {{ item }}
+          # Timestamp: {{ ansible_date_time.iso8601 }}
+          #############################################
+          {{ hostvars[item]['speedtest_result'].stdout | default('COMMAND FAILED OR NO OUTPUT') }}
+        create: yes 
+      loop: "{{ ansible_play_hosts }}" 
+      delegate_to: localhost 
+      run_once: true 
