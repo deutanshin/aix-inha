@@ -3,8 +3,8 @@
 
 ## 🏗️ 시스템 아키텍처
 
-* **언어/프레임워크**: `PHP(8.1)` / `WordPress(6.7)`
-* **데이터베이스**: `MySQL(8.0)`
+* **언어/프레임워크**: [`PHP(8.1-apache)`/ `WordPress(6.7)`](https://hub.docker.com/layers/library/wordpress/6.7.2-php8.1-apache/images/sha256-a811cbb857ab651fcc121da60c98fbc1eeeb189bf0d72c389a919f73ef53ad77)
+* **데이터베이스**: [`MySQL(8.0-debian)`](https://hub.docker.com/_/mysql)
 * **배포 환경**: `Ubuntu (18.04)`
 * **CI**: `Docker(24.0.2)/Docker-Compose(2.39.1)`
 
@@ -64,8 +64,9 @@ HTTPS SSL 인증서 / Apache 설정 파일 - 경로 내 apache-config, cert 디�
 ## ❓ Issues
 
 - **1. 설정 변경 후 재배포 시 속도 저하**
-  - WordPress의 플러그인 충돌로 인한 성능저하 유력. 플러그인을 하나씩 켜보며 확인
-
+  - WordPress 상의 plugin 상태와 DB 상의 plugin 상태 동기화 오류. 아래의 명령어로 조회하여 추적
+  - `ls -la /home/aicenter/docker_test_wp/html/wordpress/wp-content/plugins/ | grep disabled`
+  - `sudo docker exec wp_mysql mysql -uaicenter -p526 wp -e "SELECT option_value FROM wp_options WHERE option_name = 'active_plugins';"`
 - **2. HTML 숏 코드 가독성**
   - CSS와 HTML 코드를 같이 삽입하면 깨지는 현상(확인 중)
 
