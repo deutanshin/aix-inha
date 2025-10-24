@@ -1,0 +1,2 @@
+[monitoring_servers]
+192.168.x.x ansible_port=2222

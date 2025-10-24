@@ -1,0 +1,44 @@
+---
+- name: run speedtest on each source
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Set timezone to KST (Asia/Seoul)
+      community.general.timezone:
+        name: Asia/Seoul
+      become: yes
+
+
+    - name: Ensure speedtest-cli is installed
+      apt:
+        name: speedtest-cli
+        state: present
+      become: yes
+
+    - name: Create a directory for logs on the control node
+      file:
+        path: ./speedtest_logs
+        state: directory
+      delegate_to: localhost
+      run_once: true
+
+ 
+    - name: Run speedtest-cli on each node
+      command: speedtest-cli
+      register: speedtest_result
+      ignore_errors: true
+
+    
+    - name: Append result to each log file
+      lineinfile:
+        path: "./speedtest_logs/{{ item }}.log"
+        line: |
+          #############################################
+          # Timestamp: {{ lookup('pipe', 'date "+%Y-%m-%d %H:%M:%S KST"') }}
+          #############################################
+          {{ hostvars[item]['speedtest_result'].stdout | default('COMMAND FAILED OR NO OUTPUT') }}
+        create: yes
+      loop: "{{ ansible_play_hosts }}"
+      delegate_to: localhost
+      run_once: true

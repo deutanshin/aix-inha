@@ -1,0 +1,28 @@
+---
+- name: Deploy and schedule speedtest script
+  hosts: monitoring_servers  # inventory.ini에 정의된 서버 그룹 이름
+  become: yes              # 모든 작업을 sudo 권한으로 실행
+
+  tasks:
+    - name: 1. Copy speed-test script to remote servers
+      copy:
+        src: files/speed-test.sh        
+        dest: /usr/local/bin/speed-test.sh  
+        mode: '0755'                    
+
+    - name: 2. Copy systemd service file
+      copy:
+        src: files/speed-test.service
+        dest: /etc/systemd/system/speed-test.service
+
+    - name: 3. Copy systemd timer file
+      copy:
+        src: files/speed-test.timer
+        dest: /etc/systemd/system/speed-test.timer
+
+    - name: 4. Enable and start the timer service
+      systemd:
+        name: speed-test.timer
+        state: started     
+        enabled: yes         
+        daemon_reload: yes    

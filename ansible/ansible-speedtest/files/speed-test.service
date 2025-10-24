@@ -1,0 +1,6 @@
+[Unit]
+Description=Run Speedtest CLI and log the output
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/speed-test.sh
