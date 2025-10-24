@@ -8,6 +8,7 @@
 * **배포 환경**: `Ubuntu (18.04)`
 * **CI**: `Docker(24.0.2)/Docker-Compose(2.39.1)`
 
+```mermaid
 graph TD
     subgraph "애플리케이션 스택"
         WP["WordPress (6.7)"]
@@ -40,6 +41,8 @@ graph TD
     style Ubuntu fill:#e0e0e0,stroke:#333,stroke-width:2px;
     style Docker fill:#ade,stroke:#333,stroke-width:2px;
     style DockerCompose fill:#add,stroke:#333,stroke-width:2px;
+```
+
 ## 📦 배포 방법
 * **경로**: `~/docker_test_wp`
 
